@@ -1,6 +1,5 @@
 package com.example.medichealthrx.ui.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,11 +33,19 @@ fun LoginScreen(navController: NavController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Texto "Iniciar sesión" en la parte superior
+            Text(
+                text = "Iniciar sesión",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
             // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "App Logo",
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(200.dp)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -81,7 +88,6 @@ fun LoginScreen(navController: NavController) {
             Button(
                 onClick = {
                     if (username == "Equipo1" && password == "Proyecto") {
-                        Log.d("LoginScreen", "Navegando a MainScreen")
                         navController.navigate("main_screen") // Navegar a la pantalla principal
                     } else {
                         errorMessage = "Usuario o contraseña incorrectos"

@@ -1,18 +1,20 @@
 package com.example.medichealthrx.ui.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medichealthrx.R
 import com.example.medichealthrx.ui.ui.components.AlarmItem
 import com.example.medichealthrx.viewmodel.MainViewModel
 
@@ -30,10 +32,26 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    if (isSelectionMode) {
-                        Text("${selectedAlarms.size} seleccionadas")
-                    } else {
-                        Text("MedicHealth(Rx)")
+                    // Fila con logo y nombre centrados
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // Logo
+                        Image(
+                            painter = painterResource(id = R.drawable.logo), // Imagen del logo
+                            contentDescription = "Logo de la aplicación",
+                            modifier = Modifier
+                                .size(52.dp)
+                                .padding(end = 8.dp) // Espaciado entre el logo y el texto
+                        )
+                        // Texto del título
+                        Text(
+                            text = "MedicHealth(RX)",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
                     }
                 },
                 actions = {
@@ -48,10 +66,6 @@ fun MainScreen(
                             isSelectionMode = false
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = "Eliminar seleccionadas")
-                        }
-                    } else {
-                        IconButton(onClick = { navController.navigate("login_screen") }) {
-                            Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Salir")
                         }
                     }
                 }
