@@ -1,5 +1,7 @@
 package com.example.medichealthrx.ui.ui.screens
 
+import android.app.TimePickerDialog
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -9,13 +11,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.medichealthrx.data.model.Alarm
 import com.example.medichealthrx.viewmodel.MainViewModel
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,23 +21,12 @@ import java.util.*
 fun AddEditAlarmScreen(
     navController: NavController,
     viewModel: MainViewModel,
-    fragmentManager: FragmentManager?, // FragmentManager requerido para el TimePicker
+    context: Context,
     alarmToEdit: Alarm? = null
 ) {
-    if (fragmentManager == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Error: No se pudo abrir el TimePicker.")
-        }
-        return
-    }
-
     var name by remember { mutableStateOf(alarmToEdit?.name ?: "") }
     var selectedHour by remember { mutableStateOf(alarmToEdit?.hour ?: 12) }
     var selectedMinute by remember { mutableStateOf(alarmToEdit?.minute ?: 0) }
-    var isPM by remember { mutableStateOf(alarmToEdit?.state == "PM") }
 
     Scaffold(
         topBar = {
@@ -74,20 +61,14 @@ fun AddEditAlarmScreen(
             // Botón para seleccionar la hora
             Button(
                 onClick = {
-                    showTimePicker(
-                        fragmentManager = fragmentManager,
-                        initialHour = selectedHour,
-                        initialMinute = selectedMinute,
-                        onTimeSelected = { hour, minute ->
-                            selectedHour = hour
-                            selectedMinute = minute
-                            isPM = hour >= 12
-                        }
-                    )
+                    showTimePicker(context, selectedHour, selectedMinute) { hour, minute ->
+                        selectedHour = hour
+                        selectedMinute = minute
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Seleccionar Hora: ${formatTime(selectedHour, selectedMinute)}")
+                Text("Seleccionar Hora: $selectedHour:${String.format("%02d", selectedMinute)}")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -101,7 +82,7 @@ fun AddEditAlarmScreen(
                             name = name,
                             hour = selectedHour,
                             minute = selectedMinute,
-                            state = if (isPM) "PM" else "AM",
+                            state = if (selectedHour >= 12) "PM" else "AM",
                             checked = false,
                             timeInMillis = Calendar.getInstance().apply {
                                 set(Calendar.HOUR_OF_DAY, selectedHour)
@@ -119,11 +100,7 @@ fun AddEditAlarmScreen(
 
                         navController.navigateUp()
                     } else {
-                        Toast.makeText(
-                            navController.context,
-                            "Por favor, ingresa un nombre para la alarma",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, "Por favor, ingresa un nombre para la alarma", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -135,34 +112,22 @@ fun AddEditAlarmScreen(
 }
 
 /**
- * Mostrar el MaterialTimePicker
+ * Muestra el TimePickerDialog
  */
 fun showTimePicker(
-    fragmentManager: FragmentManager,
+    context: Context,
     initialHour: Int,
     initialMinute: Int,
     onTimeSelected: (hour: Int, minute: Int) -> Unit
 ) {
-    val picker = MaterialTimePicker.Builder()
-        .setTimeFormat(TimeFormat.CLOCK_12H) // Reloj circular en formato 12 horas
-        .setHour(initialHour)
-        .setMinute(initialMinute)
-        .setTitleText("Seleccionar Hora")
-        .build()
-
-    picker.addOnPositiveButtonClickListener {
-        onTimeSelected(picker.hour, picker.minute)
-    }
-
-    picker.show(fragmentManager, "timePicker")
-}
-
-/**
- * Formatear la hora en formato 12h legible
- */
-fun formatTime(hour: Int, minute: Int): String {
-    val formattedHour = if (hour > 12) hour - 12 else if (hour == 0) 12 else hour
-    val formattedMinute = String.format("%02d", minute)
-    val amPm = if (hour >= 12) "PM" else "AM"
-    return "$formattedHour:$formattedMinute $amPm"
+    val timePickerDialog = TimePickerDialog(
+        context,
+        { _, hour, minute ->
+            onTimeSelected(hour, minute)
+        },
+        initialHour,
+        initialMinute,
+        false // Usa formato de 12 horas; cámbialo a true para formato de 24 horas
+    )
+    timePickerDialog.show()
 }
