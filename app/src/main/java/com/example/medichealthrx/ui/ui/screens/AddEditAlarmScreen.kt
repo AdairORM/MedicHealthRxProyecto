@@ -1,8 +1,8 @@
 package com.example.medichealthrx.ui.ui.screens
 
-import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -10,8 +10,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medichealthrx.R
 import com.example.medichealthrx.data.model.Alarm
 import com.example.medichealthrx.viewmodel.MainViewModel
 import java.util.*
@@ -45,9 +47,20 @@ fun AddEditAlarmScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Imagen superior
+            Image(
+                painter = painterResource(id = R.drawable.medicamentos), // Cargar la imagen "medicamentos"
+                contentDescription = "Imagen de medicamentos",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp) // Ajustar la altura según lo necesario
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Campo para el nombre de la alarma
             OutlinedTextField(
                 value = name,
@@ -120,14 +133,12 @@ fun showTimePicker(
     initialMinute: Int,
     onTimeSelected: (hour: Int, minute: Int) -> Unit
 ) {
-    val timePickerDialog = TimePickerDialog(
+    val timePickerDialog = android.app.TimePickerDialog(
         context,
-        { _, hour, minute ->
-            onTimeSelected(hour, minute)
-        },
+        { _, hour, minute -> onTimeSelected(hour, minute) },
         initialHour,
         initialMinute,
-        false // Usa formato de 12 horas; cámbialo a true para formato de 24 horas
+        false // Formato de 12 horas
     )
     timePickerDialog.show()
 }
