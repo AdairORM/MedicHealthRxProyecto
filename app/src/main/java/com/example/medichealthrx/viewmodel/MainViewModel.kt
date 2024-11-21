@@ -49,9 +49,9 @@ class MainViewModel(private val dao: AlarmDao) : ViewModel() {
     fun delete(alarm: Alarm) {
         viewModelScope.launch {
             dao.deleteAlarm(alarm)
-            loadAlarms() // Actualiza el estado después de eliminar
         }
     }
+
 
     // Alternar el estado de activación de una alarma
     fun toggleAlarm(alarm: Alarm) {
