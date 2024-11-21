@@ -52,7 +52,7 @@ fun MainScreen(
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
-                    }
+                    }//
                 },
                 actions = {
                     if (isSelectionMode) {
