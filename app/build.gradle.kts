@@ -52,13 +52,19 @@ android {
 }
 
 dependencies {
+    implementation(libs.material.v190)
+
     // Dependencias de Jetpack Compose
 // Room (Base de datos local)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.material)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx.v1140)
+    implementation (libs.androidx.foundation)
+    implementation("com.google.android.material:material:1.9.0")
+
 
 // Testing
 

@@ -1,5 +1,6 @@
 package com.example.medichealthrx.ui.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -11,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.medichealthrx.R
 import com.example.medichealthrx.ui.ui.components.AlarmItem
 import com.example.medichealthrx.viewmodel.MainViewModel
 
@@ -22,14 +25,29 @@ import com.example.medichealthrx.viewmodel.MainViewModel
 @Composable
 fun MainScreen(
     navController: NavController,
-    viewModel: MainViewModel // Ahora el ViewModel se pasa como parámetro
+    viewModel: MainViewModel
 ) {
     val alarms = viewModel.alarms.collectAsState().value
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("MedicHealth(Rx)") },
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Imagen del logo con colores reales
+                        Image(
+                            painter = painterResource(id = R.drawable.logo), // Asegúrate de que el recurso 'logo' exista
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(32.dp) // Tamaño de la imagen
+                                .padding(end = 8.dp)
+                        )
+                        // Título
+                        Text("MedicHealth(Rx)")
+                    }
+                },
                 actions = {
                     IconButton(onClick = { navController.navigate("login_screen") }) {
                         Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Salir")
@@ -67,16 +85,3 @@ fun MainScreen(
         }
     }
 }
-/*
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    // Para la vista previa no necesitamos un ViewModel real
-    MainScreen(
-        navController = rememberNavController(),
-        viewModel = MainViewModel(
-            alarmDao = FakeAlarmDao()
-        )
-    )
-}
-*/
