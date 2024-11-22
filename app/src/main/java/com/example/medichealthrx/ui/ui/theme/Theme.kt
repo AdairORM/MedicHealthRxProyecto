@@ -4,38 +4,32 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
+// Esquema de colores para modo claro
 private val LightColorScheme = lightColorScheme(
-    primary = BluePrimary,
-    onPrimary = OnBlue,
-    primaryContainer = LightBlue,
-    onPrimaryContainer = BlueDark,
-    secondary = BlueSecondary,
-    onSecondary = OnBlue,
-    secondaryContainer = BlueSecondaryDark,
-    onSecondaryContainer = BlueDark,
-    background = BackgroundBlue,
-    onBackground = BlueDark,
-    surface = SurfaceBlue,
-    onSurface = BlueDark,
+    primary = LightPrimary,
+    onPrimary = LightOnPrimary,
+    secondary = LightSecondary,
+    onSecondary = LightOnSecondary,
+    background = LightBackground,
+    onBackground = LightOnBackground,
+    surface = LightBackground,
+    onSurface = LightOnBackground,
     error = ErrorRed,
-    onError = OnBlue
+    onError = OnError
 )
 
+// Esquema de colores para modo oscuro
 private val DarkColorScheme = darkColorScheme(
-    primary = BlueDark,
-    onPrimary = OnBlue,
-    primaryContainer = BluePrimary,
-    onPrimaryContainer = LightBlue,
-    secondary = BlueSecondaryDark,
-    onSecondary = OnBlue,
-    secondaryContainer = BluePrimary,
-    onSecondaryContainer = LightBlue,
-    background = BlueDark,
-    onBackground = OnBlue,
-    surface = BlueDark,
-    onSurface = OnBlue,
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
+    secondary = DarkSecondary,
+    onSecondary = DarkOnSecondary,
+    background = DarkBackground,
+    onBackground = DarkOnBackground,
+    surface = DarkBackground,
+    onSurface = DarkOnBackground,
     error = ErrorRed,
-    onError = OnBlue
+    onError = OnError
 )
 
 @Composable
