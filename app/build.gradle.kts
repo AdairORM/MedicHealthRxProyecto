@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id ("kotlin-kapt") // Agregado para Room
     id("kotlin-parcelize")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
+
 
 }
 
@@ -12,7 +13,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.medichealthrx"
+        applicationId = "com.example.medichealthrx" // Debe coincidir con Firebase
+
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -55,19 +57,18 @@ android {
 
 dependencies {
     implementation(libs.material.v190)
-    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-    implementation ("com.google.firebase:firebase-auth")
+    // Firebase Firestore
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore.ktx.v2461)
 
-
-    implementation("com.google.firebase:firebase-analytics")
 
     // Dependencias de Jetpack Compose
 // Room (Base de datos local)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.material)
+    implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx.v1140)
@@ -92,4 +93,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

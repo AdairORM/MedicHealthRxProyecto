@@ -1,6 +1,7 @@
 package com.example.medichealthrx.ui.ui.screens
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,8 @@ import androidx.navigation.NavController
 import com.example.medichealthrx.R
 import com.example.medichealthrx.data.model.Alarm
 import com.example.medichealthrx.viewmodel.MainViewModel
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,12 +27,32 @@ fun AddEditAlarmScreen(
     navController: NavController,
     viewModel: MainViewModel,
     context: Context,
-    alarmId: Int? = null // Recibe el ID de la alarma a editar
+    alarmId: Int? = null
 ) {
     val existingAlarm = alarmId?.let { viewModel.getAlarmById(it) }
     var name by remember { mutableStateOf(existingAlarm?.name ?: "") }
     var selectedHour by remember { mutableStateOf(existingAlarm?.hour ?: 12) }
     var selectedMinute by remember { mutableStateOf(existingAlarm?.minute ?: 0) }
+    var selectedMedicine by remember { mutableStateOf("") } // Medicamento seleccionado
+    var medicines by remember { mutableStateOf(listOf<String>()) } // Lista de medicamentos
+    var expanded by remember { mutableStateOf(false) } // Control del menú desplegable
+
+    // Cargar medicamentos desde Firestore
+    LaunchedEffect(Unit) {
+        try {
+            val db = FirebaseFirestore.getInstance()
+            val snapshot = db.collection("datosmedicamentos").get().await()
+            if (snapshot.isEmpty) {
+                Log.e("Firestore", "La colección 'datosmedicamentos' está vacía.")
+            } else {
+                medicines = snapshot.documents.mapNotNull { it.getString("nombre") }
+                Log.d("Firestore", "Medicamentos cargados: $medicines")
+            }
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error al cargar medicamentos: ${e.message}")
+            Toast.makeText(context, "Error al cargar medicamentos: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -67,6 +90,39 @@ fun AddEditAlarmScreen(
                 label = { Text("Nombre de la alarma") },
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Dropdown para seleccionar un medicamento
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    value = selectedMedicine,
+                    onValueChange = { },
+                    readOnly = true,
+                    label = { Text("Seleccionar Medicamento") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    medicines.forEach { medicine ->
+                        DropdownMenuItem(
+                            text = { Text(medicine) },
+                            onClick = {
+                                selectedMedicine = medicine
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

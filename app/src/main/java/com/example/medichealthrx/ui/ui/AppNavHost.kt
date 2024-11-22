@@ -10,7 +10,7 @@ import com.example.medichealthrx.ui.ui.screens.LoginScreen
 import com.example.medichealthrx.ui.ui.screens.MainScreen
 import com.example.medichealthrx.ui.ui.screens.RegisterScreen
 import com.example.medichealthrx.viewmodel.MainViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth. FirebaseAuth
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(), // Crea un NavController si no se pasa uno
