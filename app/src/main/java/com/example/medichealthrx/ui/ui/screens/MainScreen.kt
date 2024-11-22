@@ -17,8 +17,11 @@ import androidx.navigation.NavController
 import com.example.medichealthrx.R
 import com.example.medichealthrx.ui.ui.components.AlarmItem
 import com.example.medichealthrx.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -27,6 +30,30 @@ fun MainScreen(
     val alarms = viewModel.alarms.collectAsState().value
     var isSelectionMode by remember { mutableStateOf(false) }
     var selectedAlarms by remember { mutableStateOf(setOf<Int>()) }
+    var userData by remember { mutableStateOf<Map<String, Any>?>(null) }
+    var loadingUserData by remember { mutableStateOf(true) }
+
+    // Obtener los datos del usuario desde Firebase Firestore
+    LaunchedEffect(Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        userData = document.data
+                    }
+                    loadingUserData = false
+                }
+                .addOnFailureListener {
+                    loadingUserData = false
+                }
+        } else {
+            loadingUserData = false
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -45,7 +72,7 @@ fun MainScreen(
                                 .padding(end = 8.dp)
                         )
                         Text(
-                            text = "MedicHealth(RX)",
+                            text = userData?.get("name") as? String ?: "MedicHealth(RX)",
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
@@ -78,7 +105,16 @@ fun MainScreen(
             }
         }
     ) { padding ->
-        if (alarms.isEmpty()) {
+        if (loadingUserData) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else if (alarms.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

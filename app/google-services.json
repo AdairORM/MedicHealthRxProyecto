@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "368345290721",
+    "project_id": "medichealthrx-dd01a",
+    "storage_bucket": "medichealthrx-dd01a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368345290721:android:af2d017083f00b7682a4a0",
+        "android_client_info": {
+          "package_name": "com.example.medichealthrx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRu1B7ja879qrTm2i6bgByQg1bpmV2vyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
