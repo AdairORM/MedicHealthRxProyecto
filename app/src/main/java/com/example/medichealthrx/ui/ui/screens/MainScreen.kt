@@ -52,7 +52,7 @@ fun MainScreen(
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
-                    }//
+                    }
                 },
                 actions = {
                     if (isSelectionMode) {
@@ -73,7 +73,11 @@ fun MainScreen(
         },
         floatingActionButton = {
             if (!isSelectionMode) {
-                FloatingActionButton(onClick = { navController.navigate("add_alarm") }) {
+                FloatingActionButton(
+                    onClick = { navController.navigate("add_alarm") },
+                    containerColor = MaterialTheme.colorScheme.primary, // Cambiado al color primario del tema (azul claro)
+                    contentColor = MaterialTheme.colorScheme.onPrimary // Texto/icono contrastante
+                ) {
                     Icon(Icons.Default.Add, contentDescription = "Agregar Alarma")
                 }
             }
