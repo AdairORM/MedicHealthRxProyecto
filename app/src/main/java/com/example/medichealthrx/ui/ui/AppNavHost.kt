@@ -1,6 +1,7 @@
 package com.example.medichealthrx.ui.ui
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,16 +11,18 @@ import com.example.medichealthrx.ui.ui.screens.LoginScreen
 import com.example.medichealthrx.ui.ui.screens.MainScreen
 import com.example.medichealthrx.ui.ui.screens.RegisterScreen
 import com.example.medichealthrx.viewmodel.MainViewModel
+import com.example.medichealthrx.viewmodel.MainViewModelFactory
 import com.google.firebase.auth. FirebaseAuth
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(), // Crea un NavController si no se pasa uno
     fragmentManager: androidx.fragment.app.FragmentManager
 ) {
+
     val context = androidx.compose.ui.platform.LocalContext.current
     val alarmDao = com.example.medichealthrx.data.database.AlarmDatabase.getInstance(context).alarmDao
-    val viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-        factory = com.example.medichealthrx.viewmodel.MainViewModelFactory(alarmDao)
+    val viewModel: MainViewModel = viewModel(
+        factory = MainViewModelFactory(alarmDao, context)
     )
 
     // Determina la pantalla inicial en función de si el usuario está autenticado
