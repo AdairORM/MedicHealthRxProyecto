@@ -8,7 +8,7 @@ import androidx.core.view.WindowCompat
 import com.example.medichealthrx.ui.ui.AppNavHost
 import com.example.medichealthrx.ui.ui.theme.MedicHealthRxTheme
 
-class MainActivity : FragmentActivity() { // Cambiar a FragmentActivity
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -17,7 +17,7 @@ class MainActivity : FragmentActivity() { // Cambiar a FragmentActivity
 
         setContent {
             MedicHealthRxTheme {
-                // Pasar el FragmentManager a AppNavHost
+                // Llamar AppNavHost con el FragmentManager
                 AppNavHost(fragmentManager = supportFragmentManager)
             }
         }

@@ -32,21 +32,18 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    // Fila con logo y nombre centrados
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // Logo
                         Image(
-                            painter = painterResource(id = R.drawable.logo), // Imagen del logo
+                            painter = painterResource(id = R.drawable.logo),
                             contentDescription = "Logo de la aplicación",
                             modifier = Modifier
                                 .size(52.dp)
-                                .padding(end = 8.dp) // Espaciado entre el logo y el texto
+                                .padding(end = 8.dp)
                         )
-                        // Texto del título
                         Text(
                             text = "MedicHealth(RX)",
                             style = MaterialTheme.typography.titleLarge,
@@ -57,11 +54,9 @@ fun MainScreen(
                 actions = {
                     if (isSelectionMode) {
                         IconButton(onClick = {
-                            // Eliminar alarmas seleccionadas
                             val alarmsToDelete = alarms.filter { selectedAlarms.contains(it.alarmId) }
                             alarmsToDelete.forEach { viewModel.delete(it) }
 
-                            // Limpiar el estado de selección y salir del modo de selección
                             selectedAlarms = emptySet()
                             isSelectionMode = false
                         }) {
@@ -75,8 +70,8 @@ fun MainScreen(
             if (!isSelectionMode) {
                 FloatingActionButton(
                     onClick = { navController.navigate("add_alarm") },
-                    containerColor = MaterialTheme.colorScheme.primary, // Cambiado al color primario del tema (azul claro)
-                    contentColor = MaterialTheme.colorScheme.onPrimary // Texto/icono contrastante
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Agregar Alarma")
                 }
@@ -103,25 +98,24 @@ fun MainScreen(
                     AlarmItem(
                         alarm = alarm,
                         isSelected = selectedAlarms.contains(alarm.alarmId),
-                        onClick = { clickedAlarm ->
+                        onClick = {
                             if (isSelectionMode) {
-                                // Actualizar selección
-                                selectedAlarms = if (selectedAlarms.contains(clickedAlarm.alarmId)) {
-                                    selectedAlarms - clickedAlarm.alarmId
+                                selectedAlarms = if (selectedAlarms.contains(alarm.alarmId)) {
+                                    selectedAlarms - alarm.alarmId
                                 } else {
-                                    selectedAlarms + clickedAlarm.alarmId
+                                    selectedAlarms + alarm.alarmId
                                 }
 
-                                // Salir del modo de selección si no queda ninguna seleccionada
                                 if (selectedAlarms.isEmpty()) {
                                     isSelectionMode = false
                                 }
+                            } else {
+                                navController.navigate("edit_alarm/${alarm.alarmId}")
                             }
                         },
-                        onLongPress = { longPressedAlarm ->
-                            // Activar modo de selección múltiple
+                        onLongPress = {
                             isSelectionMode = true
-                            selectedAlarms = selectedAlarms + longPressedAlarm.alarmId
+                            selectedAlarms = selectedAlarms + alarm.alarmId
                         }
                     )
                 }

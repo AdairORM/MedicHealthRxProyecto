@@ -24,16 +24,17 @@ fun AddEditAlarmScreen(
     navController: NavController,
     viewModel: MainViewModel,
     context: Context,
-    alarmToEdit: Alarm? = null
+    alarmId: Int? = null // Recibe el ID de la alarma a editar
 ) {
-    var name by remember { mutableStateOf(alarmToEdit?.name ?: "") }
-    var selectedHour by remember { mutableStateOf(alarmToEdit?.hour ?: 12) }
-    var selectedMinute by remember { mutableStateOf(alarmToEdit?.minute ?: 0) }
+    val existingAlarm = alarmId?.let { viewModel.getAlarmById(it) }
+    var name by remember { mutableStateOf(existingAlarm?.name ?: "") }
+    var selectedHour by remember { mutableStateOf(existingAlarm?.hour ?: 12) }
+    var selectedMinute by remember { mutableStateOf(existingAlarm?.minute ?: 0) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (alarmToEdit == null) "Agregar Alarma" else "Editar Alarma") },
+                title = { Text(if (alarmId == null) "Agregar Alarma" else "Editar Alarma") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
@@ -50,18 +51,16 @@ fun AddEditAlarmScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Imagen superior
             Image(
-                painter = painterResource(id = R.drawable.medicamentos), // Cargar la imagen "medicamentos"
+                painter = painterResource(id = R.drawable.medicamentos),
                 contentDescription = "Imagen de medicamentos",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) // Ajustar la altura según lo necesario
+                    .height(200.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo para el nombre de la alarma
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -71,7 +70,6 @@ fun AddEditAlarmScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para seleccionar la hora
             Button(
                 onClick = {
                     showTimePicker(context, selectedHour, selectedMinute) { hour, minute ->
@@ -86,17 +84,16 @@ fun AddEditAlarmScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para guardar la alarma
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
                         val alarm = Alarm(
-                            alarmId = alarmToEdit?.alarmId ?: 0,
+                            alarmId = existingAlarm?.alarmId ?: 0,
                             name = name,
                             hour = selectedHour,
                             minute = selectedMinute,
                             state = if (selectedHour >= 12) "PM" else "AM",
-                            checked = false,
+                            checked = existingAlarm?.checked ?: false,
                             timeInMillis = Calendar.getInstance().apply {
                                 set(Calendar.HOUR_OF_DAY, selectedHour)
                                 set(Calendar.MINUTE, selectedMinute)
@@ -105,7 +102,7 @@ fun AddEditAlarmScreen(
                             }.timeInMillis
                         )
 
-                        if (alarmToEdit == null) {
+                        if (alarmId == null) {
                             viewModel.insert(alarm)
                         } else {
                             viewModel.update(alarm)
@@ -125,7 +122,7 @@ fun AddEditAlarmScreen(
 }
 
 /**
- * Muestra el TimePickerDialog
+ * Muestra un TimePickerDialog para seleccionar la hora.
  */
 fun showTimePicker(
     context: Context,
@@ -135,7 +132,9 @@ fun showTimePicker(
 ) {
     val timePickerDialog = android.app.TimePickerDialog(
         context,
-        { _, hour, minute -> onTimeSelected(hour, minute) },
+        { _, hourOfDay, minute ->
+            onTimeSelected(hourOfDay, minute)
+        },
         initialHour,
         initialMinute,
         false // Formato de 12 horas
